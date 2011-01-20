@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 import pygame
 import random
 from pygame.locals import *
@@ -13,6 +14,8 @@ SCREENRECT = Rect(0, 0, 800, 600)
 FPS = 30
 NSTARS = 100
 NASTEROIDS = 10
+MUSIC = os.path.isfile('bgm.ogg')
+
 
 # Colors
 COLORS = {
@@ -62,11 +65,11 @@ def main():
     clock = pygame.time.Clock()
     
     # load BGM
-    pygame.mixer.music.load('bgm.ogg')
+    if MUSIC: pygame.mixer.music.load('bgm.ogg')
     
     while True:
         # check bgm and restart if needed
-        if pygame.mixer.music.get_busy() == False:
+        if MUSIC and pygame.mixer.music.get_busy() == False:
             pygame.mixer.music.rewind()
             pygame.mixer.music.play()
         
@@ -81,10 +84,10 @@ def main():
         
         # handle player actions
         keystate = pygame.key.get_pressed()
-        if (keystate[K_UP]):
+        if (keystate[K_UP] or keystate[ord('w')]):
             player.thrust()
 
-        direction = keystate[K_RIGHT] - keystate[K_LEFT]
+        direction = (keystate[K_RIGHT] or keystate[ord('d')]) - (keystate[K_LEFT] or keystate[ord('a')])
         if (direction != 0):
             player.turn(direction)
 
